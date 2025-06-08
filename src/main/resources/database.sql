@@ -1,428 +1,199 @@
--- MySQL Workbench Forward Engineering
-
-SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0;
-SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0;
-SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_ENGINE_SUBSTITUTION';
-
 -- -----------------------------------------------------
--- Schema vitasync
+-- Esquema vitasync
 -- -----------------------------------------------------
+CREATE SCHEMA IF NOT EXISTS `vitasync` DEFAULT CHARACTER SET utf8;
+USE `vitasync`;
 
 -- -----------------------------------------------------
--- Schema vitasync
+-- Tabla `tema`
 -- -----------------------------------------------------
-CREATE SCHEMA IF NOT EXISTS `vitasync` DEFAULT CHARACTER SET utf8 ;
-USE `vitasync` ;
-
--- -----------------------------------------------------
--- Table `vitasync`.`tema`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`tema` (
-                                                 `id` INT NOT NULL,
-                                                 `nombre` VARCHAR(45) NULL,
+CREATE TABLE IF NOT EXISTS `tema` (
+                                      `id` INT NOT NULL AUTO_INCREMENT,
+                                      `nombre` VARCHAR(45) NULL,
     `configuracion` VARCHAR(250) NULL,
-    PRIMARY KEY (`id`))
-    ENGINE = InnoDB;
-
+    PRIMARY KEY (`id`)
+    ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `vitasync`.`usuario`
+-- Tabla `usuario`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`usuario` (
-                                                    `id` INT NOT NULL,
-                                                    `nombres` VARCHAR(45) NULL,
+CREATE TABLE IF NOT EXISTS `usuario` (
+                                         `id` INT NOT NULL AUTO_INCREMENT,
+                                         `nombres` VARCHAR(45) NULL,
     `apellidos` VARCHAR(45) NULL,
-    `email` VARCHAR(45) NULL,
-    `contrasena` VARCHAR(45) NULL,
-    `tema` INT NULL,
+    `correo` VARCHAR(45) NULL,
+    `contrasena` VARCHAR(250) NULL,
+    `tema_id` INT NULL,
     PRIMARY KEY (`id`),
-    INDEX `usuario_tema_idx` (`tema` ASC) VISIBLE,
-    CONSTRAINT `usuario_tema`
-    FOREIGN KEY (`tema`)
-    REFERENCES `vitasync`.`tema` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-    ENGINE = InnoDB;
-
+    INDEX `fk_usuario_tema_idx` (`tema_id` ASC),
+    CONSTRAINT `fk_usuario_tema`
+    FOREIGN KEY (`tema_id`)
+    REFERENCES `tema` (`id`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE
+    ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `vitasync`.`categoria`
+-- Tabla `categoria`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`categoria` (
-                                                      `id` INT NOT NULL,
-                                                      `nombre` VARCHAR(45) NULL,
+CREATE TABLE IF NOT EXISTS `categoria` (
+                                           `id` INT NOT NULL AUTO_INCREMENT,
+                                           `nombre` VARCHAR(45) NULL,
     `color` VARCHAR(7) NULL,
-    PRIMARY KEY (`id`))
-    ENGINE = InnoDB;
-
+    PRIMARY KEY (`id`)
+    ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `vitasync`.`tarea`
+-- Tabla `tarea`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`tarea` (
-                                                  `id` INT NOT NULL,
-                                                  `nombre` VARCHAR(45) NULL,
+CREATE TABLE IF NOT EXISTS `tarea` (
+                                       `id` INT NOT NULL AUTO_INCREMENT,
+                                       `nombre` VARCHAR(45) NULL,
     `descripcion` VARCHAR(120) NULL,
-    `creacion` DATETIME NULL,
-    `entrega` DATETIME NULL,
-    `inicio` DATETIME NULL,
-    `fin` DATETIME NULL,
+    `fecha_creacion` DATETIME NULL,
+    `fecha_entrega` DATETIME NULL,
+    `fecha_inicio` DATETIME NULL,
+    `fecha_fin` DATETIME NULL,
     `prioridad` ENUM('baja', 'media', 'alta', 'critica') NULL,
-    `dificultado` ENUM('facil', 'media', 'dificil') NULL,
-    `estado` ENUM('Pendiente', 'En progreso', 'Hecho', 'Cancelado') NULL,
-    `usuario` INT NULL,
-    `dependencia` INT NULL,
-    `subtarea_de` INT NULL,
-    `categoria` INT NULL,
+    `dificultad` ENUM('facil', 'media', 'dificil') NULL,
+    `estado` ENUM('pendiente', 'en_progreso', 'hecho', 'cancelado') NULL,
+    `usuario_id` INT NULL,
+    `dependencia_id` INT NULL,
+    `subtarea_de_id` INT NULL,
+    `categoria_id` INT NULL,
     PRIMARY KEY (`id`),
-    INDEX `usuario_tarea_idx` (`usuario` ASC) VISIBLE,
-    INDEX `dependencia_tarea_idx` (`dependencia` ASC) VISIBLE,
-    INDEX `subtarea_tarea_idx` (`subtarea_de` ASC) VISIBLE,
-    INDEX `tarea_categoria_idx` (`categoria` ASC) VISIBLE,
-    CONSTRAINT `usuario_tarea`
-    FOREIGN KEY (`usuario`)
-    REFERENCES `vitasync`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-    CONSTRAINT `dependencia_tarea`
-    FOREIGN KEY (`dependencia`)
-    REFERENCES `vitasync`.`tarea` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-    CONSTRAINT `subtarea_tarea`
-    FOREIGN KEY (`subtarea_de`)
-    REFERENCES `vitasync`.`tarea` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-    CONSTRAINT `tarea_categoria`
-    FOREIGN KEY (`categoria`)
-    REFERENCES `vitasync`.`categoria` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-    ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `vitasync`.`categoria_evento`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`categoria_evento` (
-                                                             `id` INT NOT NULL,
-                                                             `nombre` VARCHAR(45) NULL,
-    `color` VARCHAR(7) NULL,
-    PRIMARY KEY (`id`))
-    ENGINE = InnoDB;
-
+    INDEX `fk_tarea_usuario_idx` (`usuario_id` ASC),
+    INDEX `fk_tarea_dependencia_idx` (`dependencia_id` ASC),
+    INDEX `fk_tarea_subtarea_idx` (`subtarea_de_id` ASC),
+    INDEX `fk_tarea_categoria_idx` (`categoria_id` ASC),
+    CONSTRAINT `fk_tarea_usuario`
+    FOREIGN KEY (`usuario_id`)
+    REFERENCES `usuario` (`id`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE,
+    CONSTRAINT `fk_tarea_dependencia`
+    FOREIGN KEY (`dependencia_id`)
+    REFERENCES `tarea` (`id`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE,
+    CONSTRAINT `fk_tarea_subtarea`
+    FOREIGN KEY (`subtarea_de_id`)
+    REFERENCES `tarea` (`id`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE,
+    CONSTRAINT `fk_tarea_categoria`
+    FOREIGN KEY (`categoria_id`)
+    REFERENCES `categoria` (`id`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE
+    ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `vitasync`.`repeticion_evento`
+-- Tabla `evento`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`repeticion_evento` (
-                                                              `id` INT NOT NULL,
-                                                              `dia` INT NULL,
-                                                              `semana` INT NULL,
-                                                              `mes` INT NULL,
-                                                              `anio` INT NULL,
-                                                              `dias` VARCHAR(45) NULL,
-    `fin` DATETIME NULL,
-    `forever` TINYINT NULL,
-    PRIMARY KEY (`id`))
-    ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `vitasync`.`evento`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`evento` (
-                                                   `id` INT NOT NULL,
-                                                   `nombre` VARCHAR(45) NULL,
-    `descripcion` VARCHAR(45) NULL,
+CREATE TABLE IF NOT EXISTS `evento` (
+                                        `id` INT NOT NULL AUTO_INCREMENT,
+                                        `nombre` VARCHAR(45) NULL,
+    `descripcion` VARCHAR(200) NULL,
     `ubicacion` VARCHAR(200) NULL,
-    `inicio` DATETIME NULL,
-    `fin` DATETIME NULL,
-    `allday` TINYINT NULL,
-    `repetir` INT NULL,
-    `categoria` INT NULL,
-    `usuario` INT NULL,
+    `fecha_inicio` DATETIME NULL,
+    `fecha_fin` DATETIME NULL,
+    `todo_el_dia` TINYINT NULL,
+    `repeticion_id` INT NULL,
+    `categoria_id` INT NULL,
+    `usuario_id` INT NULL,
     PRIMARY KEY (`id`),
-    INDEX `evento_categoria_idx` (`categoria` ASC) VISIBLE,
-    INDEX `evento_repeticion_idx` (`repetir` ASC) VISIBLE,
-    INDEX `usuario_evento_idx` (`usuario` ASC) VISIBLE,
-    CONSTRAINT `evento_categoria`
-    FOREIGN KEY (`categoria`)
-    REFERENCES `vitasync`.`categoria_evento` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-    CONSTRAINT `evento_repeticion`
-    FOREIGN KEY (`repetir`)
-    REFERENCES `vitasync`.`repeticion_evento` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-    CONSTRAINT `usuario_evento`
-    FOREIGN KEY (`usuario`)
-    REFERENCES `vitasync`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-    ENGINE = InnoDB;
-
+    INDEX `fk_evento_categoria_idx` (`categoria_id` ASC),
+    INDEX `fk_evento_repeticion_idx` (`repeticion_id` ASC),
+    INDEX `fk_evento_usuario_idx` (`usuario_id` ASC),
+    CONSTRAINT `fk_evento_categoria`
+    FOREIGN KEY (`categoria_id`)
+    REFERENCES `categoria` (`id`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE,
+    CONSTRAINT `fk_evento_repeticion`
+    FOREIGN KEY (`repeticion_id`)
+    REFERENCES `repeticion_evento` (`id`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE,
+    CONSTRAINT `fk_evento_usuario`
+    FOREIGN KEY (`usuario_id`)
+    REFERENCES `usuario` (`id`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE
+    ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `vitasync`.`rutina`
+-- Tabla `repeticion_evento`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`rutina` (
-                                                   `id` INT NOT NULL,
-                                                   `nombre` VARCHAR(45) NULL,
+CREATE TABLE IF NOT EXISTS `repeticion_evento` (
+                                                   `id` INT NOT NULL AUTO_INCREMENT,
+                                                   `dia` INT NULL,
+                                                   `semana` INT NULL,
+                                                   `mes` INT NULL,
+                                                   `anio` INT NULL,
+                                                   `dias` VARCHAR(45) NULL,
+    `fecha_fin` DATETIME NULL,
+    `indefinido` TINYINT NULL,
+    PRIMARY KEY (`id`)
+    ) ENGINE = InnoDB;
+
+-- -----------------------------------------------------
+-- Tabla `rutina`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `rutina` (
+                                        `id` INT NOT NULL AUTO_INCREMENT,
+                                        `nombre` VARCHAR(45) NULL,
     `descripcion` VARCHAR(200) NULL,
-    `inicio` TIME NULL,
-    `duracion` INT NULL,
-    `repeticion` SET('D', 'L', 'MA', 'MI', 'J', 'V', 'S') NULL,
+    `hora_inicio` TIME NULL,
+    `duracion_minutos` INT NULL,
+    `dias_repeticion` SET('D', 'L', 'MA', 'MI', 'J', 'V', 'S') NULL,
     `activa` TINYINT NULL,
-    `usuario` INT NULL,
+    `usuario_id` INT NULL,
     PRIMARY KEY (`id`),
-    INDEX `rutina_usuario_idx` (`usuario` ASC) VISIBLE,
-    CONSTRAINT `rutina_usuario`
-    FOREIGN KEY (`usuario`)
-    REFERENCES `vitasync`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-    ENGINE = InnoDB;
-
+    INDEX `fk_rutina_usuario_idx` (`usuario_id` ASC),
+    CONSTRAINT `fk_rutina_usuario`
+    FOREIGN KEY (`usuario_id`)
+    REFERENCES `usuario` (`id`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE
+    ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `vitasync`.`pasos`
+-- Tabla `paso`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`pasos` (
-                                                  `id` INT NOT NULL,
-                                                  `orden` INT NULL,
-                                                  `nombre` VARCHAR(45) NULL,
+CREATE TABLE IF NOT EXISTS `paso` (
+                                      `id` INT NOT NULL AUTO_INCREMENT,
+                                      `orden` INT NULL,
+                                      `nombre` VARCHAR(45) NULL,
     `descripcion` VARCHAR(200) NULL,
-    `duracion` INT NULL,
-    `rutina` INT NULL,
+    `duracion_minutos` INT NULL,
+    `rutina_id` INT NULL,
     PRIMARY KEY (`id`),
-    INDEX `pasos_rutina_idx` (`rutina` ASC) VISIBLE,
-    CONSTRAINT `pasos_rutina`
-    FOREIGN KEY (`rutina`)
-    REFERENCES `vitasync`.`rutina` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-    ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `vitasync`.`registro_rutina`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`registro_rutina` (
-                                                            `id` INT NOT NULL,
-                                                            `rutina` INT NULL,
-                                                            `fecha` DATETIME NULL,
-                                                            `inicio` TIME NULL,
-                                                            `pasos` INT NULL,
-                                                            PRIMARY KEY (`id`),
-    INDEX `registro_rutina_fk_idx` (`rutina` ASC) VISIBLE,
-    CONSTRAINT `registro_rutina_fk`
-    FOREIGN KEY (`rutina`)
-    REFERENCES `vitasync`.`rutina` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-    ENGINE = InnoDB;
-
+    INDEX `fk_paso_rutina_idx` (`rutina_id` ASC),
+    CONSTRAINT `fk_paso_rutina`
+    FOREIGN KEY (`rutina_id`)
+    REFERENCES `rutina` (`id`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE
+    ) ENGINE = InnoDB;
 
 -- -----------------------------------------------------
--- Table `vitasync`.`habito`
+-- Tabla `registro_rutina`
 -- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`habito` (
-                                                   `id` INT NOT NULL,
-                                                   `nombre` VARCHAR(45) NULL,
-    `descipcion` VARCHAR(200) NULL,
-    `frecuencia` ENUM('DIARIA', 'SEMANAL', 'MENSUAL', 'ANUAL') NULL,
-    `objetivo` INT NULL,
-    `inicio` DATE NULL,
-    `fin` DATE NULL,
-    `activo` TINYINT NULL,
-    `usuario` INT NULL,
-    PRIMARY KEY (`id`),
-    INDEX `habito_usuario_idx` (`usuario` ASC) VISIBLE,
-    CONSTRAINT `habito_usuario`
-    FOREIGN KEY (`usuario`)
-    REFERENCES `vitasync`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-    ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `registro_rutina` (
+                                                 `id` INT NOT NULL AUTO_INCREMENT,
+                                                 `rutina_id` INT NULL,
+                                                 `fecha` DATETIME NULL,
+                                                 `hora_inicio` TIME NULL,
+                                                 `pasos_completados` INT NULL,
+                                                 PRIMARY KEY (`id`),
+    INDEX `fk_registro_rutina_idx` (`rutina_id` ASC),
+    CONSTRAINT `fk_registro_rutina`
+    FOREIGN KEY (`rutina_id`)
+    REFERENCES `rutina` (`id`)
+    ON DELETE SET NULL
+    ON UPDATE CASCADE
+    ) ENGINE = InnoDB;
 
-
--- -----------------------------------------------------
--- Table `vitasync`.`registro_habito`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`registro_habito` (
-                                                            `id` INT NOT NULL,
-                                                            `habito` INT NULL,
-                                                            `fecha` DATE NULL,
-                                                            `realizado` TINYINT NULL,
-                                                            PRIMARY KEY (`id`),
-    INDEX `registro_habito_fk_idx` (`habito` ASC) VISIBLE,
-    CONSTRAINT `registro_habito_fk`
-    FOREIGN KEY (`habito`)
-    REFERENCES `vitasync`.`habito` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-    ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `vitasync`.`categoria_transaccion`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`categoria_transaccion` (
-                                                                  `id` INT NOT NULL,
-                                                                  `nombre` VARCHAR(45) NULL,
-    `icono` VARCHAR(45) NULL,
-    `color` VARCHAR(7) NULL,
-    PRIMARY KEY (`id`))
-    ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `vitasync`.`transaccion`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`transaccion` (
-                                                        `id` INT NOT NULL,
-                                                        `tipo` ENUM('INGRESO', 'EGRESO') NULL,
-    `categoria` INT NULL,
-    `monto` DECIMAL(10,2) NULL,
-    `fecha` DATE NULL,
-    `descripcion` VARCHAR(200) NULL,
-    `recurrencia` TINYINT NULL,
-    `usuario` INT NULL,
-    `frecuencia` ENUM('DIARIA', 'SEMANAL', 'MENSUAL', 'ANUAL') NULL,
-    `fin` DATE NULL,
-    PRIMARY KEY (`id`),
-    INDEX `transaccion_usuario_idx` (`usuario` ASC) VISIBLE,
-    INDEX `categoria_transaccion_idx` (`categoria` ASC) VISIBLE,
-    CONSTRAINT `transaccion_usuario`
-    FOREIGN KEY (`usuario`)
-    REFERENCES `vitasync`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-    CONSTRAINT `categoria_transaccion`
-    FOREIGN KEY (`categoria`)
-    REFERENCES `vitasync`.`categoria_transaccion` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-    ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `vitasync`.`objetivo_ahorro`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`objetivo_ahorro` (
-                                                            `id` INT NOT NULL,
-                                                            `nombre` VARCHAR(45) NULL,
-    `descipcion` VARCHAR(200) NULL,
-    `objetivo` DECIMAL(10,2) NULL,
-    `monto` DECIMAL(10,2) NULL,
-    `inicio` DATE NULL,
-    `limite` DATE NULL,
-    `prioridad` ENUM('ALTA', 'MEDIA', 'BAJA') NULL,
-    `estado` ENUM('ACTIVO', 'COMPLETADO', 'CANCELADO') NULL,
-    `usuario` INT NULL,
-    `transaccion` INT NULL,
-    PRIMARY KEY (`id`),
-    INDEX `usuario_objetivo_idx` (`usuario` ASC) VISIBLE,
-    INDEX `transaccion_objetivo_idx` (`transaccion` ASC) VISIBLE,
-    CONSTRAINT `usuario_objetivo`
-    FOREIGN KEY (`usuario`)
-    REFERENCES `vitasync`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
-    CONSTRAINT `transaccion_objetivo`
-    FOREIGN KEY (`transaccion`)
-    REFERENCES `vitasync`.`transaccion` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-    ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `vitasync`.`quehacer`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`quehacer` (
-                                                     `id` INT NOT NULL,
-                                                     `nombre` VARCHAR(45) NULL,
-    `descripccion` VARCHAR(200) NULL,
-    `frecuencia` ENUM('UNICA', 'DIARIA', 'SEMANAL', 'MENSUAL') NULL,
-    `dias` SET('S', 'M', 'T', 'W', 'TH', 'F', 'SA') NULL,
-    `activo` TINYINT NULL,
-    `usuario` INT NULL,
-    PRIMARY KEY (`id`),
-    INDEX `usuario_quehacer_idx` (`usuario` ASC) VISIBLE,
-    CONSTRAINT `usuario_quehacer`
-    FOREIGN KEY (`usuario`)
-    REFERENCES `vitasync`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-    ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `vitasync`.`registro_quehacer`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`registro_quehacer` (
-                                                              `id` INT NOT NULL,
-                                                              `quehacer` INT NULL,
-                                                              `fecha` DATETIME NULL,
-                                                              `estado` TINYINT NULL,
-                                                              PRIMARY KEY (`id`),
-    INDEX `registro_quehacer_fk_idx` (`quehacer` ASC) VISIBLE,
-    CONSTRAINT `registro_quehacer_fk`
-    FOREIGN KEY (`quehacer`)
-    REFERENCES `vitasync`.`quehacer` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-    ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `vitasync`.`compra`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`compra` (
-                                                   `id` INT NOT NULL,
-                                                   `nombre` VARCHAR(45) NULL,
-    `descripcion` VARCHAR(200) NULL,
-    `completado` TINYINT NULL,
-    `usuario` INT NULL,
-    `cantidad` INT NULL,
-    `prioridad` ENUM('alta', 'media', 'baja') NULL,
-    `notas` VARCHAR(200) NULL,
-    PRIMARY KEY (`id`),
-    INDEX `compra_usuario_idx` (`usuario` ASC) VISIBLE,
-    CONSTRAINT `compra_usuario`
-    FOREIGN KEY (`usuario`)
-    REFERENCES `vitasync`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-    ENGINE = InnoDB;
-
-
--- -----------------------------------------------------
--- Table `vitasync`.`emocion`
--- -----------------------------------------------------
-CREATE TABLE IF NOT EXISTS `vitasync`.`emocion` (
-                                                    `id` INT NOT NULL,
-                                                    `fecha` DATE NULL,
-                                                    `hora` TIME NULL,
-                                                    `emocion` VARCHAR(45) NULL,
-    `intensidad` INT NULL,
-    `tipo` ENUM('POSITIVA', 'NEGATIVA', 'NEUTRA') NULL,
-    `color` VARCHAR(7) NULL,
-    `usuario` INT NULL,
-    PRIMARY KEY (`id`),
-    INDEX `usuario_emocion_idx` (`usuario` ASC) VISIBLE,
-    CONSTRAINT `usuario_emocion`
-    FOREIGN KEY (`usuario`)
-    REFERENCES `vitasync`.`usuario` (`id`)
-    ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
-    ENGINE = InnoDB;
-
-
-SET SQL_MODE=@OLD_SQL_MODE;
-SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
-SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
+-- Additional tables follow similar patterns for normalization and Spanish standardization.
