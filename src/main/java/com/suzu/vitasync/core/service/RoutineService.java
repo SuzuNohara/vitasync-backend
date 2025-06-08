@@ -1,0 +1,36 @@
+package com.suzu.vitasync.core.service;
+
+import com.suzu.vitasync.core.dao.RoutineDao;
+import com.suzu.vitasync.core.entity.Routine;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.List;
+
+@Service
+public class RoutineService {
+
+    @Autowired
+    private RoutineDao routineDao;
+
+    public List<Routine> getRoutinesByUsuarioId(Long usuarioId) {
+        return routineDao.findByUsuarioId(usuarioId);
+    }
+
+    public Routine createRoutine(Routine routine) {
+        return routineDao.save(routine);
+    }
+
+    public Routine updateRoutine(Long id, Routine routineDetails) {
+        Routine routine = routineDao.findById(id).orElseThrow(() -> new RuntimeException("Routine not found"));
+        routine.setNombreRutina(routineDetails.getNombreRutina());
+        routine.setDescripcionRutina(routineDetails.getDescripcionRutina());
+        routine.setHoraInicioRutina(routineDetails.getHoraInicioRutina());
+        routine.setDuracionRutinaMinutos(routineDetails.getDuracionRutinaMinutos());
+        return routineDao.save(routine);
+    }
+
+    public void deleteRoutine(Long id) {
+        routineDao.deleteById(id);
+    }
+}
