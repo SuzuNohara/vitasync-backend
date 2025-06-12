@@ -55,6 +55,18 @@ CREATE TABLE IF NOT EXISTS `vitasync`.`categoria_transaccion` (
 
 
 -- -----------------------------------------------------
+-- Table `vitasync`.`categorias`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `vitasync`.`categorias` (
+                                                       `id` BIGINT NOT NULL AUTO_INCREMENT,
+                                                       `descripcion_categoria` VARCHAR(255) NULL DEFAULT NULL,
+    `nombre_categoria` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
 -- Table `vitasync`.`tema`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `vitasync`.`tema` (
@@ -71,9 +83,9 @@ CREATE TABLE IF NOT EXISTS `vitasync`.`tema` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `vitasync`.`usuario` (
                                                     `id` INT NOT NULL,
-                                                    `nombre_usuario` VARCHAR(45) NULL DEFAULT NULL,
-    `apellido_usuario` VARCHAR(45) NULL DEFAULT NULL,
-    `correo_electronico` VARCHAR(100) NULL DEFAULT NULL,
+                                                    `nombre_usuario` VARCHAR(255) NOT NULL,
+    `apellido_usuario` VARCHAR(255) NULL DEFAULT NULL,
+    `correo_electronico` VARCHAR(255) NOT NULL,
     `clave_acceso` VARCHAR(255) NULL DEFAULT NULL,
     `tema` INT NULL DEFAULT NULL,
     PRIMARY KEY (`id`),
@@ -257,13 +269,14 @@ CREATE TABLE IF NOT EXISTS `vitasync`.`objetivo_ahorro` (
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `vitasync`.`rutina` (
                                                    `id` INT NOT NULL,
-                                                   `nombre_rutina` VARCHAR(45) NULL DEFAULT NULL,
-    `descripcion_rutina` VARCHAR(200) NULL DEFAULT NULL,
+                                                   `nombre_rutina` VARCHAR(255) NOT NULL,
+    `descripcion_rutina` VARCHAR(255) NULL DEFAULT NULL,
     `hora_inicio_rutina` TIME NULL DEFAULT NULL,
     `duracion_rutina_minutos` INT NULL DEFAULT NULL,
     `repeticion` SET('D', 'L', 'MA', 'MI', 'J', 'V', 'S') NULL DEFAULT NULL,
     `activa` TINYINT NULL DEFAULT NULL,
     `usuario` INT NULL DEFAULT NULL,
+    `usuario_id` BIGINT NOT NULL,
     PRIMARY KEY (`id`),
     INDEX `rutina_usuario_idx` (`usuario` ASC) VISIBLE,
     CONSTRAINT `rutina_usuario`
@@ -365,14 +378,29 @@ CREATE TABLE IF NOT EXISTS `vitasync`.`registro_rutina` (
 
 
 -- -----------------------------------------------------
+-- Table `vitasync`.`rutinas`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `vitasync`.`rutinas` (
+                                                    `id` BIGINT NOT NULL AUTO_INCREMENT,
+                                                    `descripcion_rutina` VARCHAR(255) NULL DEFAULT NULL,
+    `duracion_rutina_minutos` INT NULL DEFAULT NULL,
+    `hora_inicio_rutina` TIME NULL DEFAULT NULL,
+    `nombre_rutina` VARCHAR(255) NOT NULL,
+    `usuario_id` BIGINT NOT NULL,
+    PRIMARY KEY (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
 -- Table `vitasync`.`tarea`
 -- -----------------------------------------------------
 CREATE TABLE IF NOT EXISTS `vitasync`.`tarea` (
                                                   `id` INT NOT NULL,
-                                                  `nombre_tarea` VARCHAR(45) NULL DEFAULT NULL,
-    `descripcion_tarea` VARCHAR(120) NULL DEFAULT NULL,
+                                                  `nombre_tarea` VARCHAR(255) NOT NULL,
+    `descripcion_tarea` VARCHAR(255) NULL DEFAULT NULL,
     `fecha_creacion_tarea` DATETIME NULL DEFAULT NULL,
-    `fecha_entrega_tarea` DATETIME NULL DEFAULT NULL,
+    `fecha_entrega_tarea` DATE NULL DEFAULT NULL,
     `fecha_inicio_tarea` DATETIME NULL DEFAULT NULL,
     `fecha_fin_tarea` DATETIME NULL DEFAULT NULL,
     `fecha_actualizacion` DATETIME NULL DEFAULT NULL,
@@ -383,6 +411,7 @@ CREATE TABLE IF NOT EXISTS `vitasync`.`tarea` (
     `dependencia` INT NULL DEFAULT NULL,
     `subtarea_de` INT NULL DEFAULT NULL,
     `categoria` INT NULL DEFAULT NULL,
+    `usuario_id` BIGINT NOT NULL,
     PRIMARY KEY (`id`),
     INDEX `usuario_tarea_idx` (`usuario` ASC) VISIBLE,
     INDEX `dependencia_tarea_idx` (`dependencia` ASC) VISIBLE,
@@ -400,6 +429,38 @@ CREATE TABLE IF NOT EXISTS `vitasync`.`tarea` (
     CONSTRAINT `usuario_tarea`
     FOREIGN KEY (`usuario`)
     REFERENCES `vitasync`.`usuario` (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `vitasync`.`tareas`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `vitasync`.`tareas` (
+                                                   `id` BIGINT NOT NULL AUTO_INCREMENT,
+                                                   `descripcion_tarea` VARCHAR(255) NULL DEFAULT NULL,
+    `fecha_creacion_tarea` DATETIME(6) NULL DEFAULT NULL,
+    `fecha_entrega_tarea` DATE NULL DEFAULT NULL,
+    `fecha_fin_tarea` DATETIME(6) NULL DEFAULT NULL,
+    `fecha_inicio_tarea` DATETIME(6) NULL DEFAULT NULL,
+    `nombre_tarea` VARCHAR(255) NOT NULL,
+    `usuario_id` BIGINT NOT NULL,
+    PRIMARY KEY (`id`))
+    ENGINE = InnoDB
+    DEFAULT CHARACTER SET = utf8mb3;
+
+
+-- -----------------------------------------------------
+-- Table `vitasync`.`usuarios`
+-- -----------------------------------------------------
+CREATE TABLE IF NOT EXISTS `vitasync`.`usuarios` (
+                                                     `id` BIGINT NOT NULL AUTO_INCREMENT,
+                                                     `apellido_usuario` VARCHAR(255) NULL DEFAULT NULL,
+    `clave_acceso` VARCHAR(255) NOT NULL,
+    `correo_electronico` VARCHAR(255) NOT NULL,
+    `nombre_usuario` VARCHAR(255) NOT NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE INDEX `UKduxldumspflsqyka52vo72hse` (`correo_electronico` ASC) VISIBLE)
     ENGINE = InnoDB
     DEFAULT CHARACTER SET = utf8mb3;
 

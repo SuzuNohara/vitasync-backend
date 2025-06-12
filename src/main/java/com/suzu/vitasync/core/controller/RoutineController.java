@@ -24,7 +24,7 @@ public class RoutineController {
         routine.setDescripcionRutina(routineDto.getDescripcionRutina());
         routine.setHoraInicioRutina(routineDto.getHoraInicioRutina());
         routine.setDuracionRutinaMinutos(routineDto.getDuracionRutinaMinutos());
-        routine.setUsuarioId(routineDto.getUsuarioId());
+//        routine.setUsuarioId(routineDto.getUsuarioId());
         Routine createdRoutine = routineService.createRoutine(routine);
         return new ResponseEntity<>(createdRoutine, HttpStatus.CREATED);
     }

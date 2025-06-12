@@ -2,18 +2,16 @@ package com.suzu.vitasync.core.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
-
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 
 @Data
 @Entity
-@Table(name = "tareas")
+@Table(name = "tarea", schema = "vitasync")
 public class Task {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
     @Column(name = "nombre_tarea", nullable = false)
     private String nombreTarea;
@@ -33,6 +31,35 @@ public class Task {
     @Column(name = "fecha_fin_tarea")
     private LocalDateTime fechaFinTarea;
 
-    @Column(name = "usuario_id", nullable = false)
-    private Long usuarioId;
+    @Column(name = "fecha_actualizacion")
+    private LocalDateTime fechaActualizacion;
+
+    public enum Prioridad { baja, media, alta, critica }
+    @Enumerated(EnumType.STRING)
+    @Column(name = "prioridad")
+    private Prioridad prioridad;
+
+    public enum Dificultado { facil, media, dificil }
+    @Enumerated(EnumType.STRING)
+    @Column(name = "dificultado")
+    private Dificultado dificultado;
+
+    public enum Estado { Pendiente, En_progreso, Hecho, Cancelado }
+    @Enumerated(EnumType.STRING)
+    @Column(name = "estado")
+    private Estado estado;
+
+    @ManyToOne
+    @JoinColumn(name = "usuario", referencedColumnName = "id")
+    private User usuario;
+
+    @Column(name = "dependencia")
+    private Integer dependencia;
+
+    @Column(name = "subtarea_de")
+    private Integer subtareaDe;
+
+    @Column(name = "categoria")
+    private Integer categoria;
+
 }

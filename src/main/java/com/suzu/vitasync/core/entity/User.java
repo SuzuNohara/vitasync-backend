@@ -5,11 +5,11 @@ import lombok.Data;
 
 @Data
 @Entity
-@Table(name = "usuarios")
+@Table(name = "usuario")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    private Integer id;
 
     @Column(name = "nombre_usuario", nullable = false)
     private String nombreUsuario;
