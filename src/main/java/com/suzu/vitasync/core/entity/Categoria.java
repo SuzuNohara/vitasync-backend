@@ -8,6 +8,7 @@ import lombok.Data;
 @Table(name = "categoria")
 public class Categoria {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -16,4 +17,5 @@ public class Categoria {
 
     @Column(name = "color_categoria", length = 7)
     private String colorCategoria;
+
 }

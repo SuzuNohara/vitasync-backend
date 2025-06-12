@@ -41,4 +41,16 @@ public class CategoriaController {
         categoriaService.deleteById(id);
         return ResponseEntity.noContent().build();
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<Categoria> updateCategoria(@PathVariable Integer id, @RequestBody Categoria categoria) {
+        Optional<Categoria> existente = categoriaService.findById(id);
+        if (existente.isPresent()) {
+            categoria.setId(id);
+            Categoria actualizada = categoriaService.save(categoria);
+            return ResponseEntity.ok(actualizada);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
 }
