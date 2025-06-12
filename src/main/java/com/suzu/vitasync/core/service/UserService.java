@@ -13,7 +13,7 @@ public class UserService {
     @Autowired
     private UserDao userDao;
 
-    public Optional<User> getUserById(Long id) {
+    public Optional<User> getUserById(Integer id) {
         return userDao.findById(id);
     }
 
@@ -25,7 +25,7 @@ public class UserService {
         return userDao.save(user);
     }
 
-    public User updateUser(Long id, User userDetails) {
+    public User updateUser(Integer id, User userDetails) {
         User user = userDao.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
         user.setNombreUsuario(userDetails.getNombreUsuario());
         user.setApellidoUsuario(userDetails.getApellidoUsuario());
@@ -34,7 +34,7 @@ public class UserService {
         return userDao.save(user);
     }
 
-    public void deleteUser(Long id) {
+    public void deleteUser(Integer id) {
         userDao.deleteById(id);
     }
 }

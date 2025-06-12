@@ -53,13 +53,16 @@ public class Task {
     @JoinColumn(name = "usuario", referencedColumnName = "id")
     private User usuario;
 
-    @Column(name = "dependencia")
-    private Integer dependencia;
+    @ManyToOne
+    @JoinColumn(name = "dependencia", referencedColumnName = "id")
+    private Task dependencia;
 
-    @Column(name = "subtarea_de")
-    private Integer subtareaDe;
+    @ManyToOne
+    @JoinColumn(name = "subtarea_de", referencedColumnName = "id")
+    private Task subtareaDe;
 
-    @Column(name = "categoria")
-    private Integer categoria;
+    @ManyToOne
+    @JoinColumn(name = "categoria", referencedColumnName = "id")
+    private Categoria categoria;
 
 }

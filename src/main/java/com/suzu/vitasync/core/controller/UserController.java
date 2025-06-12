@@ -39,13 +39,13 @@ public class UserController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<?> getUserProfile(@PathVariable Long id) {
+    public ResponseEntity<?> getUserProfile(@PathVariable Integer id) {
         User user = userService.getUserById(id).orElseThrow(() -> new RuntimeException("User not found"));
         return new ResponseEntity<>(user, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateUserProfile(@PathVariable Long id, @RequestBody UserDto userDto) {
+    public ResponseEntity<?> updateUserProfile(@PathVariable Integer id, @RequestBody UserDto userDto) {
         User userDetails = new User();
         userDetails.setNombreUsuario(userDto.getNombreUsuario());
         userDetails.setApellidoUsuario(userDto.getApellidoUsuario());
