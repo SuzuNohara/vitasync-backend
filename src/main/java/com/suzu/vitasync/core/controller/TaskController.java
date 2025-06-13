@@ -31,9 +31,7 @@ public class TaskController {
 
     @GetMapping
     public ResponseEntity<?> listTasksByUser(@RequestParam Long usuarioId) {
-        ResponseEntity<?> response;
-        response = new ResponseEntity<>(usuarioId, HttpStatus.CREATED);
-        return response;
+        return ResponseEntity.ok(taskService.getTasksByUsuarioId(usuarioId.intValue()));
     }
 
     @PutMapping("/{id}")
