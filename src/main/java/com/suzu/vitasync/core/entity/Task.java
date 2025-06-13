@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Table(name = "tarea", schema = "vitasync")
 public class Task {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 

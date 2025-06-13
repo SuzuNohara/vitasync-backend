@@ -4,13 +4,19 @@ import com.suzu.vitasync.core.dto.TaskDto;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
+import com.suzu.vitasync.core.service.TaskService;
+import org.springframework.beans.factory.annotation.Autowired;
 // TaskController.java
 @RestController
 @RequestMapping("/api/tareas")
 public class TaskController {
+
+    @Autowired
+    private TaskService taskService;
+
     @PostMapping
     public ResponseEntity<?> createTask(@RequestBody TaskDto taskDto) {
+        TaskDto  created = taskService.createTask(taskDto);
         ResponseEntity<?> response;
         response = new ResponseEntity<>(taskDto, HttpStatus.CREATED);
         return response;
