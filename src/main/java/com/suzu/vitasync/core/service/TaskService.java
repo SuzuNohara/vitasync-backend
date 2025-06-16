@@ -123,4 +123,5 @@ public class TaskService {
                 .orElseThrow(() -> new RuntimeException("Category not found"));
         task.setCategoria(categoria);
     }
+
 }
