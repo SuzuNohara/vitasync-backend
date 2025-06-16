@@ -10,10 +10,12 @@ import java.time.LocalTime;
 @AllArgsConstructor
 @NoArgsConstructor
 public class RoutineDto {
-    private Long id;
+    private Integer id;
     private String nombreRutina;
     private String descripcionRutina;
     private LocalTime horaInicioRutina;
     private Integer duracionRutinaMinutos;
-    private Long usuarioId;
+    private String repeticion; // e.g., "L,MA,MI"
+    private Boolean activa;
+    private Integer usuario;
 }
