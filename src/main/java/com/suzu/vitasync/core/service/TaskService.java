@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class TaskService {
@@ -123,5 +125,12 @@ public class TaskService {
                 .orElseThrow(() -> new RuntimeException("Category not found"));
         task.setCategoria(categoria);
     }
+
+    public Map<String, List<TaskDto>> getTasksByUsuarioIdGroupedByEstado(Integer usuarioId) {
+    List<TaskDto> tasks = getTasksByUsuarioId(usuarioId);
+    return tasks.stream().collect(Collectors.groupingBy(task -> 
+        task.getEstado() != null ? task.getEstado().name() : "SinEstado"
+    ));
+}
 
 }

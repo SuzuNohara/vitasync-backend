@@ -45,4 +45,9 @@ public class TaskController {
         taskService.deleteTask(id.intValue());
         return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/agrupadas")
+    public ResponseEntity<?> listTasksByUserGrouped(@RequestParam Long usuarioId) {
+        return ResponseEntity.ok(taskService.getTasksByUsuarioIdGroupedByEstado(usuarioId.intValue()));
+    }
 }
