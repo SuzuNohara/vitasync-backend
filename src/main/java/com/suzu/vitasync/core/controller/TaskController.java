@@ -35,16 +35,19 @@ public class TaskController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> updateTask(@PathVariable Long id, @RequestBody TaskDto taskDto) {
-        ResponseEntity<?> response;
-        response = new ResponseEntity<>(taskDto, HttpStatus.CREATED);
-        return response;
+    public ResponseEntity<TaskDto> updateTask(@PathVariable Integer id, @RequestBody TaskDto dto) {
+        TaskDto updated = taskService.updateTask(id, dto);
+        return ResponseEntity.ok(updated);
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<?> deleteTask(@PathVariable Long id) {
-        ResponseEntity<?> response;
-        response = new ResponseEntity<>(id, HttpStatus.CREATED);
-        return response;
+        taskService.deleteTask(id.intValue());
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/agrupadas")
+    public ResponseEntity<?> listTasksByUserGrouped(@RequestParam Long usuarioId) {
+        return ResponseEntity.ok(taskService.getTasksByUsuarioIdGroupedByEstado(usuarioId.intValue()));
     }
 }
