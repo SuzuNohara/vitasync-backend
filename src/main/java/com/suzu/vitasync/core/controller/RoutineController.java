@@ -91,7 +91,7 @@ public class RoutineController {
     }
 
     @DeleteMapping("/{id}/subrutina/{subrutinaId}")
-    public ResponseEntity<void> deleteSubrutina(@PathVariable Integer id, @RequestParam Integer subrutinaId) {
+    public ResponseEntity<Void> deleteSubrutina(@PathVariable Integer id, @RequestParam Integer subrutinaId) {
         Optional<Subrutina> subrutina = subrutinaService.findById(subrutinaId);
         if (subrutina.isPresent()) {
             subrutinaService.deleteById(subrutinaId);
