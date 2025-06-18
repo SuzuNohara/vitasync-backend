@@ -1,8 +1,11 @@
 package com.suzu.vitasync.core.controller;
 
 import com.suzu.vitasync.core.dto.RoutineDto;
+import com.suzu.vitasync.core.dto.SubrutinaDto;
 import com.suzu.vitasync.core.entity.Routine;
+import com.suzu.vitasync.core.entity.Subrutina;
 import com.suzu.vitasync.core.entity.User;
+import com.suzu.vitasync.core.service.SubrutinaService;
 import com.suzu.vitasync.core.service.UserService;
 import com.suzu.vitasync.core.service.RoutineService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,9 @@ public class RoutineController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private SubrutinaService subrutinaService;
 
     @PostMapping
     public ResponseEntity<Routine> createRoutine(@RequestBody RoutineDto routineDto) {
@@ -69,5 +75,29 @@ public class RoutineController {
     public ResponseEntity<Void> deleteRoutine(@PathVariable Integer id) {
         routineService.deleteRoutine(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @PostMapping("/{id}/subrutina")
+    public ResponseEntity<Void> addSubrutina(@PathVariable Integer id, @RequestBody SubrutinaDto subrutina) {
+        Routine routine = routineService.getRoutineById(id);
+        subrutinaService.save(new Subrutina(subrutina.getId(), routine, subrutina.getName()));
+        return new ResponseEntity<>(HttpStatus.CREATED);
+    }
+
+    @GetMapping("/{id}/subrutinas")
+    public ResponseEntity<List<Subrutina>> getSubrutinasByRoutineId(@PathVariable Integer id) {
+        List<Subrutina> subrutinas = subrutinaService.findRutina(id);
+        return new ResponseEntity<>(subrutinas, HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{id}/subrutina/{subrutinaId}")
+    public ResponseEntity<void> deleteSubrutina(@PathVariable Integer id, @RequestParam Integer subrutinaId) {
+        Optional<Subrutina> subrutina = subrutinaService.findById(subrutinaId);
+        if (subrutina.isPresent()) {
+            subrutinaService.deleteById(subrutinaId);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
     }
 }
