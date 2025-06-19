@@ -2,6 +2,7 @@ package com.suzu.vitasync.core.service;
 
 import com.suzu.vitasync.core.dao.SubrutinaDao;
 import com.suzu.vitasync.core.entity.Subrutina;
+import com.suzu.vitasync.core.entity.Routine;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,8 @@ public class SubrutinaService {
     }
 
     public List<Subrutina> findRutina(Integer rutinaId) {
-        return subrutinaDao.findByRutina(rutinaId);
+        Routine rutina = new Routine();
+        rutina.setId(rutinaId);
+        return subrutinaDao.findByRoutine(rutina);
     }
 }

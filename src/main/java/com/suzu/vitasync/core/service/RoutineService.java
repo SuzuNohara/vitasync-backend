@@ -2,6 +2,7 @@ package com.suzu.vitasync.core.service;
 
 import com.suzu.vitasync.core.dao.RoutineDao;
 import com.suzu.vitasync.core.entity.Routine;
+import com.suzu.vitasync.core.entity.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,7 +15,9 @@ public class RoutineService {
     private RoutineDao routineDao;
 
     public List<Routine> getRoutinesByUsuarioId(Integer usuarioId) {
-        return routineDao.findByUsuarioId(usuarioId);
+        User user = new User();
+        user.setId(usuarioId);
+        return routineDao.findByUsuario(user);
     }
 
     public Routine createRoutine(Routine routine) {
