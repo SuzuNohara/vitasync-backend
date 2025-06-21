@@ -2,6 +2,7 @@ package com.suzu.vitasync.core.controller;
 
 import com.suzu.vitasync.core.dto.RoutineDto;
 import com.suzu.vitasync.core.dto.SubrutinaDto;
+import com.suzu.vitasync.core.entity.RegistroRutina;
 import com.suzu.vitasync.core.entity.Routine;
 import com.suzu.vitasync.core.entity.Subrutina;
 import com.suzu.vitasync.core.entity.User;
@@ -99,5 +100,53 @@ public class RoutineController {
         } else {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+    }
+
+    @GetMapping("/registro-rutina")
+    public ResponseEntity<List<RegistroRutina>> getAllRegistroRutina() {
+        List<RegistroRutina> registros = routineService.getAllRegistroRutina();
+        return new ResponseEntity<>(registros, HttpStatus.OK);
+    }
+
+    // Get RegistroRutina by ID
+    @GetMapping("/registro-rutina/{id}")
+    public ResponseEntity<RegistroRutina> getRegistroRutinaById(@PathVariable Integer id) {
+        return routineService.getRegistroRutinaById(id)
+                .map(registro -> new ResponseEntity<>(registro, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    // Get RegistroRutina by Rutina ID
+    @GetMapping("/registro-rutina/rutina/{rutinaId}")
+    public ResponseEntity<List<RegistroRutina>> getRegistroRutinaByRutina(@PathVariable Integer rutinaId) {
+        Routine rutina = new Routine();
+        rutina.setId(rutinaId);
+        List<RegistroRutina> registros = routineService.getRegistroRutinaByRutina(rutina);
+        return new ResponseEntity<>(registros, HttpStatus.OK);
+    }
+
+    // Create RegistroRutina
+    @PostMapping("/registro-rutina")
+    public ResponseEntity<RegistroRutina> createRegistroRutina(@RequestBody RegistroRutina registroRutina) {
+        RegistroRutina created = routineService.createRegistroRutina(registroRutina);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
+
+    // Update RegistroRutina
+    @PutMapping("/registro-rutina/{id}")
+    public ResponseEntity<RegistroRutina> updateRegistroRutina(@PathVariable Integer id, @RequestBody RegistroRutina registroRutina) {
+        try {
+            RegistroRutina updated = routineService.updateRegistroRutina(id, registroRutina);
+            return new ResponseEntity<>(updated, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // Delete RegistroRutina
+    @DeleteMapping("/registro-rutina/{id}")
+    public ResponseEntity<Void> deleteRegistroRutina(@PathVariable Integer id) {
+        routineService.deleteRegistroRutina(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }
