@@ -1,6 +1,7 @@
 package com.suzu.vitasync.core.controller;
 
 import com.suzu.vitasync.core.entity.CategoriaTransaccion;
+import com.suzu.vitasync.core.entity.ObjetivoAhorro;
 import com.suzu.vitasync.core.entity.Transaccion;
 import com.suzu.vitasync.core.service.TransaccionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,13 +11,11 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/transactionss")
+@RequestMapping("/api/financial")
 public class TransaccionController {
 
     @Autowired
     private TransaccionService transaccionService;
-
-    // Transaccion endpoints
 
     @GetMapping("/transacciones/{id}")
     public ResponseEntity<Transaccion> getTransaccionById(@PathVariable Integer id) {
@@ -87,6 +86,32 @@ public class TransaccionController {
             return ResponseEntity.notFound().build();
         }
         transaccionService.deleteCategoriaById(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/objetivos/usuario/{userId}")
+    public List<ObjetivoAhorro> getObjetivosByUsuario(@PathVariable Integer userId) {
+        return transaccionService.findObjetivosByUsuario(userId);
+    }
+
+    @GetMapping("/objetivos/{id}")
+    public ResponseEntity<ObjetivoAhorro> getObjetivoById(@PathVariable Integer id) {
+        return transaccionService.findObjetivoById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PostMapping("/objetivos")
+    public ObjetivoAhorro createObjetivo(@RequestBody ObjetivoAhorro objetivo) {
+        return transaccionService.saveObjetivo(objetivo);
+    }
+
+    @DeleteMapping("/objetivos/{id}")
+    public ResponseEntity<Void> deleteObjetivo(@PathVariable Integer id) {
+        if (!transaccionService.findObjetivoById(id).isPresent()) {
+            return ResponseEntity.notFound().build();
+        }
+        transaccionService.deleteObjetivoById(id);
         return ResponseEntity.noContent().build();
     }
 }
