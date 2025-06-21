@@ -1,7 +1,10 @@
+// src/main/java/com/suzu/vitasync/core/service/RoutineService.java
 package com.suzu.vitasync.core.service;
 
+import com.suzu.vitasync.core.dao.PasosDao;
 import com.suzu.vitasync.core.dao.RegistroRutinaDao;
 import com.suzu.vitasync.core.dao.RoutineDao;
+import com.suzu.vitasync.core.entity.Pasos;
 import com.suzu.vitasync.core.entity.RegistroRutina;
 import com.suzu.vitasync.core.entity.Routine;
 import com.suzu.vitasync.core.entity.User;
@@ -20,10 +23,15 @@ public class RoutineService {
     @Autowired
     private RegistroRutinaDao registroRutinaDao;
 
-    public List<Routine> getRoutinesByUsuarioId(Integer usuarioId) {
-        User user = new User();
-        user.setId(usuarioId);
-        return routineDao.findByUsuario(user);
+    @Autowired
+    private PasosDao pasosDao;
+
+    public List<Routine> getAllRoutines() {
+        return routineDao.findAll();
+    }
+
+    public Optional<Routine> getRoutineById(Integer id) {
+        return routineDao.findById(id);
     }
 
     public Routine createRoutine(Routine routine) {
@@ -47,9 +55,10 @@ public class RoutineService {
         routineDao.deleteById(id);
     }
 
-    public Routine getRoutineById(Integer id) {
-        return routineDao.findById(id)
-                .orElseThrow(() -> new RuntimeException("Routine not found"));
+    public List<Routine> getRoutinesByUsuarioId(Integer usuarioId) {
+        User user = new User();
+        user.setId(usuarioId);
+        return routineDao.findByUsuario(user);
     }
 
     public List<RegistroRutina> getAllRegistroRutina() {
@@ -78,8 +87,40 @@ public class RoutineService {
         registroRutinaDao.deleteById(id);
     }
 
-    // Get RegistroRutina by Rutina
+    // Custom method: Get RegistroRutina by Routine
     public List<RegistroRutina> getRegistroRutinaByRutina(Routine rutina) {
         return registroRutinaDao.findByRutina(rutina);
+    }
+
+    public List<Pasos> getAllPasos() {
+        return pasosDao.findAll();
+    }
+
+    public Optional<Pasos> getPasosById(Integer id) {
+        return pasosDao.findById(id);
+    }
+
+    public Pasos createPasos(Pasos pasos) {
+        return pasosDao.save(pasos);
+    }
+
+    public Pasos updatePasos(Integer id, Pasos pasosDetails) {
+        Pasos pasos = pasosDao.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pasos not found"));
+        pasos.setOrdenPaso(pasosDetails.getOrdenPaso());
+        pasos.setNombrePaso(pasosDetails.getNombrePaso());
+        pasos.setDescripcionPaso(pasosDetails.getDescripcionPaso());
+        pasos.setDuracionPasoMinutos(pasosDetails.getDuracionPasoMinutos());
+        pasos.setRutina(pasosDetails.getRutina());
+        return pasosDao.save(pasos);
+    }
+
+    public void deletePasos(Integer id) {
+        pasosDao.deleteById(id);
+    }
+
+    // Custom method: Get Pasos by Rutina
+    public List<Pasos> getPasosByRutina(Routine rutina) {
+        return pasosDao.findByRutina(rutina);
     }
 }

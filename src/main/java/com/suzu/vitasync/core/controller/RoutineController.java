@@ -2,10 +2,7 @@ package com.suzu.vitasync.core.controller;
 
 import com.suzu.vitasync.core.dto.RoutineDto;
 import com.suzu.vitasync.core.dto.SubrutinaDto;
-import com.suzu.vitasync.core.entity.RegistroRutina;
-import com.suzu.vitasync.core.entity.Routine;
-import com.suzu.vitasync.core.entity.Subrutina;
-import com.suzu.vitasync.core.entity.User;
+import com.suzu.vitasync.core.entity.*;
 import com.suzu.vitasync.core.service.SubrutinaService;
 import com.suzu.vitasync.core.service.UserService;
 import com.suzu.vitasync.core.service.RoutineService;
@@ -53,7 +50,7 @@ public class RoutineController {
 
     @GetMapping("/{id}")
     public ResponseEntity<Routine> getRoutineById(@PathVariable Integer id) {
-        Routine routine = routineService.getRoutineById(id);
+        Routine routine = routineService.getRoutineById(id).get();
         return new ResponseEntity<>(routine, HttpStatus.OK);
     }
 
@@ -80,7 +77,7 @@ public class RoutineController {
 
     @PostMapping("/{id}/subrutina")
     public ResponseEntity<Void> addSubrutina(@PathVariable Integer id, @RequestBody SubrutinaDto subrutina) {
-        Routine routine = routineService.getRoutineById(id);
+        Routine routine = routineService.getRoutineById(id).get();
         subrutinaService.save(new Subrutina(subrutina.getId(), routine, subrutina.getName()));
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
@@ -148,5 +145,53 @@ public class RoutineController {
     public ResponseEntity<Void> deleteRegistroRutina(@PathVariable Integer id) {
         routineService.deleteRegistroRutina(id);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/pasos")
+    public ResponseEntity<List<Pasos>> getAllPasos() {
+        List<Pasos> pasos = routineService.getAllPasos();
+        return new ResponseEntity<>(pasos, HttpStatus.OK);
+    }
+
+    // Get Pasos by ID
+    @GetMapping("/pasos/{id}")
+    public ResponseEntity<Pasos> getPasosById(@PathVariable Integer id) {
+        return routineService.getPasosById(id)
+                .map(pasos -> new ResponseEntity<>(pasos, HttpStatus.OK))
+                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    }
+
+    // Create Pasos
+    @PostMapping("/pasos")
+    public ResponseEntity<Pasos> createPasos(@RequestBody Pasos pasos) {
+        Pasos created = routineService.createPasos(pasos);
+        return new ResponseEntity<>(created, HttpStatus.CREATED);
+    }
+
+    // Update Pasos
+    @PutMapping("/pasos/{id}")
+    public ResponseEntity<Pasos> updatePasos(@PathVariable Integer id, @RequestBody Pasos pasos) {
+        try {
+            Pasos updated = routineService.updatePasos(id, pasos);
+            return new ResponseEntity<>(updated, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+    // Delete Pasos
+    @DeleteMapping("/pasos/{id}")
+    public ResponseEntity<Void> deletePasos(@PathVariable Integer id) {
+        routineService.deletePasos(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    }
+
+    // Get Pasos by Routine (Rutina) ID
+    @GetMapping("/pasos/rutina/{rutinaId}")
+    public ResponseEntity<List<Pasos>> getPasosByRutina(@PathVariable Integer rutinaId) {
+        Routine rutina = new Routine();
+        rutina.setId(rutinaId);
+        List<Pasos> pasos = routineService.getPasosByRutina(rutina);
+        return new ResponseEntity<>(pasos, HttpStatus.OK);
     }
 }
