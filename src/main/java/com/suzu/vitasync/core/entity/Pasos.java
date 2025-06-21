@@ -1,4 +1,3 @@
-// src/main/java/com/suzu/vitasync/core/entity/Pasos.java
 package com.suzu.vitasync.core.entity;
 
 import jakarta.persistence.*;
