@@ -10,6 +10,7 @@ import java.time.LocalTime;
 @Table(name = "rutina")
 public class Routine {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @Column(name = "nombre_rutina", nullable = false)

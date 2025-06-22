@@ -8,7 +8,8 @@ import lombok.Data;
 @Table(name = "pasos")
 public class Pasos {
 
-    @Id
+    @Id 
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 

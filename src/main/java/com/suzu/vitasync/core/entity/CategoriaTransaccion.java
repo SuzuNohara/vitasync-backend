@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 public class CategoriaTransaccion {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 

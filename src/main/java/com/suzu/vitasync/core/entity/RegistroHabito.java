@@ -10,6 +10,7 @@ import java.time.LocalDate;
 public class RegistroHabito {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
