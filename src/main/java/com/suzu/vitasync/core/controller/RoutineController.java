@@ -189,9 +189,15 @@ public class RoutineController {
     // Get Pasos by Routine (Rutina) ID
     @GetMapping("/pasos/rutina/{rutinaId}")
     public ResponseEntity<List<Pasos>> getPasosByRutina(@PathVariable Integer rutinaId) {
-        Routine rutina = new Routine();
-        rutina.setId(rutinaId);
-        List<Pasos> pasos = routineService.getPasosByRutina(rutina);
+        List<Pasos> pasos = routineService.getPasosByRutina(rutinaId);
         return new ResponseEntity<>(pasos, HttpStatus.OK);
     }
+
+    // Get RegistroRutina by Usuario ID
+    @GetMapping("/registro-rutina/usuario/{usuarioId}")
+    public ResponseEntity<List<RegistroRutina>> getRegistroRutinaByUsuario(@PathVariable Integer usuarioId) {
+        List<RegistroRutina> registros = routineService.getRegistroRutinaByUsuario(usuarioId);
+        return new ResponseEntity<>(registros, HttpStatus.OK);
+    }
+
 }

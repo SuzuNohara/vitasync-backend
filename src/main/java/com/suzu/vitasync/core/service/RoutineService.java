@@ -123,4 +123,13 @@ public class RoutineService {
     public List<Pasos> getPasosByRutina(Routine rutina) {
         return pasosDao.findByRutina(rutina);
     }
+
+    public List<Pasos> getPasosByRutina(Integer rutinaId) {
+        return pasosDao.findByRutinaId(rutinaId);
+    }
+
+    public List<RegistroRutina> getRegistroRutinaByUsuario(Integer usuarioId) {
+        return registroRutinaDao.findByRutinaUsuarioId(usuarioId);
+    }
+    
 }

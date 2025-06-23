@@ -10,4 +10,5 @@ import java.util.List;
 @Repository
 public interface PasosDao extends JpaRepository<Pasos, Integer> {
     List<Pasos> findByRutina(Routine rutina);
+    List<Pasos> findByRutinaId(Integer rutinaId);
 }
